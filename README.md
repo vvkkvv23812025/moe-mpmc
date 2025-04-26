@@ -21,6 +21,43 @@ The key idea is to **predict** which experts will be active in the *next* batch 
 
 ---
 
+
+## 📚 Architecture Comparisons
+
+### 1. SwitchTransformers Expert Layout
+
+A traditional SwitchTransformers model where **all experts are loaded**, causing underutilization of GPU resources:
+
+<p align="center">
+  <img src="switchtransformers_expert_moe.png" alt="SwitchTransformers Expert MoE" width="700">
+</p>
+
+---
+
+### 2. SiDA-MoE Expert Layout
+
+**SiDA-MoE** improves efficiency by loading **only the predicted active experts** for the batch:
+
+<p align="center">
+  <img src="sida_moe_expert_moe.png" alt="SiDA-MoE Expert MoE" width="700">
+</p>
+
+---
+
+### 3. MoE-MPMC Expert Layout (Ours)
+
+**MoE-MPMC** further advances the strategy by **predicting and replicating active experts** based on load, achieving **maximum parallelism and throughput**:
+
+<p align="center">
+  <img src="moe_mpmc_expert_moe.png" alt="MoE-MPMC Expert MoE" width="700">
+</p>
+
+
+**Workflow** for the paper is given below:
+<p align="center">
+  <img src="fastMoe_drawio.png" alt="MoE-MPMC Workflow" width="700">
+</p>
+
 # 🚀 Project Setup and Execution Guide
 
 This project uses **Python 3.8.20**, **Micromamba 1.4.2**, and requires **SLURM version > 24**. Follow the steps below carefully to set up the environment and run the SLURM jobs.
