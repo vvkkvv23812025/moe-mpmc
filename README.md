@@ -20,3 +20,61 @@ The key idea is to **predict** which experts will be active in the *next* batch 
 3. **End-to-end speed-up** of up to three times latency on Switch-Base-128 while maintaining 90–95 % of baseline accuracy.  
 
 ---
+
+# 🚀 Project Setup and Execution Guide
+
+This project uses **Python 3.8.20**, **Micromamba 1.4.2**, and requires **SLURM version > 24**. Follow the steps below carefully to set up the environment and run the SLURM jobs.
+
+---
+
+## 🛠️ Setup Instructions
+
+### 1. Install Python 3.8.20
+
+We recommend using [pyenv](https://github.com/pyenv/pyenv) to install and manage Python versions.
+
+```bash
+# Install pyenv
+curl https://pyenv.run | bash
+
+# Restart your shell (or source ~/.bashrc or ~/.zshrc depending on your shell)
+source ~/.bashrc
+
+# Install Python 3.8.20
+pyenv install 3.8.20
+
+# Set local version for this project
+pyenv local 3.8.20
+
+python --version
+# Expected output: Python 3.8.20
+
+# Install Micromamba
+curl micro.mamba.pm/install.sh | bash
+
+# Source your shell config file again
+source ~/.bashrc
+
+# Verify micromamba installation
+micromamba --version
+# Expected output: micromamba 1.4.2
+
+# Create environment
+micromamba create --file environment.yml --name myenv
+
+# Activate the environment
+micromamba activate myenv
+
+#Install additional packages in requirements.txt
+pip install -r requirements.txt
+
+scontrol --version
+# Example expected output: slurm 24.05.2
+
+#Submit the job using below command
+sbatch job_runner.sh
+
+
+
+
+
