@@ -29,7 +29,7 @@ The key idea is to **predict** which experts will be active in the *next* batch 
 A traditional SwitchTransformers model where **all experts are loaded**, causing underutilization of GPU resources:
 
 <p align="center">
-  <img src="switchtransformers_expert_moe.png" alt="SwitchTransformers Expert MoE" width="700">
+  <img src="switchtransformers_expert_moe.png" alt="SwitchTransformers Expert MoE" width="400">
 </p>
 
 ---
@@ -39,7 +39,7 @@ A traditional SwitchTransformers model where **all experts are loaded**, causing
 **SiDA-MoE** improves efficiency by loading **only the predicted active experts** for the batch:
 
 <p align="center">
-  <img src="sida_moe_expert_moe.png" alt="SiDA-MoE Expert MoE" width="700">
+  <img src="sida_moe_expert_moe.png" alt="SiDA-MoE Expert MoE" width="400">
 </p>
 
 ---
@@ -49,13 +49,13 @@ A traditional SwitchTransformers model where **all experts are loaded**, causing
 **MoE-MPMC** further advances the strategy by **predicting and replicating active experts** based on load, achieving **maximum parallelism and throughput**:
 
 <p align="center">
-  <img src="moe_mpmc_expert_moe.png" alt="MoE-MPMC Expert MoE" width="700">
+  <img src="moe_mpmc_expert_moe.png" alt="MoE-MPMC Expert MoE" width="400">
 </p>
 
 
 **Workflow** for the paper is given below:
 <p align="center">
-  <img src="fastMoe_drawio.png" alt="MoE-MPMC Workflow" width="700">
+  <img src="fastMoE_drawio.png" alt="MoE-MPMC Workflow" width="700">
 </p>
 
 # 🚀 Project Setup and Execution Guide
