@@ -65,30 +65,52 @@ class SODAManager:
                 self.expert_module[n + ".router.classifier"] = m
         self.expert_status = {k: {"cpu": set(range(n_experts)), "gpu": set()} for k in self.expert_module.keys()}
 
-    def gen_hash(self, soft_target=False):
+    def gen_hash(self, *, soft_target: bool = False):
+        """
+        Build the hash table for the *next* batch.
+    
+        Assumptions (per user spec & Algorithm 2):
+            • self.predictor() already emits the replicated expert IDs needed
+              for the upcoming batch—one ID per (token, layer) position.
+            • If soft_target=True it returns a tuple (values, indices) where
+              `values` are the soft targets (probabilities) and `indices`
+              are the replicated expert IDs.
+            • self.module_keys is an L-length list mapping MoE layers to keys.
+        Returns
+        -------
+        hash_table : dict  {layer-key ➜ tensor or (values, indices)}
+        expert_lists : dict {layer-key ➜ set(active expert IDs)}
+        """
         try:
-            batch = next(self.loader_iter)
+            batch = next(self.loader_iter)          # X_{i+1} in Algorithm 2
         except StopIteration:
             return None, None
-
+    
         with torch.no_grad():
             emb_out = self.emb(batch["input_ids"].to("cuda"))
-            logits = self.predictor(emb_out)
-            # TODO: Add a softmax before get topk?
-            emb_out = torch.softmax(logits, dim=-1)
-            emb_out = torch.topk(emb_out, k=self.topk, dim=-1)
+            pred_out = self.predictor(emb_out)
         if soft_target:
-            value, indices = emb_out.values.cpu(), emb_out.indices.cpu()
-            hash_table = {key: (value[idx, :, :, :], indices[idx, :, :, :]) for idx, key in enumerate(self.module_keys)}
+            values, indices = pred_out
+            values, indices = values.cpu(), indices.cpu()
         else:
-            indices = emb_out.indices.cpu()
-            hash_table = {key: indices[idx, :, :, :] for idx, key in enumerate(self.module_keys)}
-
-        expert_lists = {
-            key: set(torch.unique(indices[idx, :, :, :]).numpy()) for idx, key in enumerate(self.module_keys)
-        }
-        # Assemble the hash table
+            indices = pred_out.cpu()
+    
+        hash_table   = {}
+        expert_lists = {}
+    
+        for l, key in enumerate(self.module_keys):
+            if soft_target:
+                layer_val = values[:, :, l]         # [B, T]
+                layer_idx = indices[:, :, l]        # [B, T]
+                hash_table[key] = (layer_val, layer_idx)
+            else:
+                layer_idx = indices[:, :, l]        # [B, T]
+                hash_table[key] = layer_idx
+    
+            expert_lists[key] = set(torch.unique(layer_idx).numpy().tolist())
+    
         return hash_table, expert_lists
+
 
     def move_experts(self, expert_lists):
         for name, module in self.expert_module.items():
