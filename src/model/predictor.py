@@ -265,7 +265,7 @@ class SimpleLSTMClassifier(nn.Module):
         self.compression_fc = nn.Linear(input_dim, hidden_dim)
         self.residual_fc = nn.Linear(hidden_dim, hidden_dim)
         self.relu = nn.ReLU()
-        self.lstm = nn.LSTM(hidden_dim, hidden_dim, num_layers, batch_first=True)
+        self.lstm = nn.SRU(hidden_dim, hidden_dim, 10, batch_first=True)
         self.y_keys = y_keys
         self.fc = nn.ModuleDict({key: nn.Linear(hidden_dim, num_classes) for key in y_keys})
 
