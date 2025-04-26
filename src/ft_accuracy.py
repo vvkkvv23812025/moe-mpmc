@@ -175,11 +175,11 @@ def run_end2end(args):
                 metrics.add_batch(predictions=predictions, references=batch["label"])
     soda_metrics = metrics.compute()
     print("Finetuned model metrics:", ft_metrics)
-    print("SODA model metrics:", soda_metrics)
+    print("MoE-MPMC model metrics:", soda_metrics)
 
     with open(f"{ft_ckpt}/ft_accuracy.txt", "w") as f:
         f.write(f"Finetuned: \n{ft_metrics}\n")
-        f.write(f"SODA: \n{soda_metrics}\n")
+        f.write(f"MoE-MPMC: \n{soda_metrics}\n")
     result = {"ft": ft_metrics, "soda": soda_metrics}
     del model, manager, predictor, soda_eval_loader, eval_loader, metrics
     
