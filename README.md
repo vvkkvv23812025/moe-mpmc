@@ -55,7 +55,7 @@ A traditional SwitchTransformers model where **all experts are loaded**, causing
 
 **Workflow** for the paper is given below:
 <p align="center">
-  <img src="fastMoE_drawio.png" alt="MoE-MPMC Workflow" width="700">
+  <img src="fastMoE_drawio.png" alt="MoE-MPMC Workflow" width="700" height="700">
 </p>
 
 # 🚀 Project Setup and Execution Guide
